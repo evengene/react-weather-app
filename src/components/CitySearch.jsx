@@ -22,13 +22,14 @@ const CitySearch = (props) => {
           className="search-input"
           value={cityName}
           onChange={withChange(changeCityName)}
-          placeholder="Search by City"
+          placeholder="Enter city name"
         />
         <Button
           onClick={partial(fetchCity, cityName)}
           variant="primary"
+          className="search-button"
         >
-          Add City
+          Search
         </Button>
       </div>
     </div>

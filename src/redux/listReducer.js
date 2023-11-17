@@ -1,5 +1,5 @@
 import * as actions from '../redux/actions';
-import {handleActions} from 'redux-actions';
+import { handleActions } from 'redux-actions';
 
 const initialState = {
   list: [],
@@ -8,13 +8,24 @@ const initialState = {
 
 const addCity = (state, action) => {
   const city = action.payload;
-  if (!isCityInList(state.list, city)) {
-    const updatedCities = [...state.list, city];
-    const latestItem = updatedCities.slice(-1)[0];
+  const cityArray = getCities(state);
+  if (!isCityInList(cityArray, city)) {
+    const updatedList = [...cityArray, city];
+    localStorage.setItem('citiesMine', JSON.stringify(updatedList));
+    const updatedLatestItem = updatedList.slice(-1)[0];
     return {
-      list: updatedCities,
-      latestItem: latestItem,
+      list: updatedList,
+      latestItem: updatedLatestItem,
     }
+  }
+}
+
+const getCities = (state) => {
+  const cities = localStorage.getItem('citiesMine') || '';
+  if (cities) {
+    return JSON.parse(cities);
+  } else {
+    return state.list;
   }
 }
 
@@ -33,6 +44,7 @@ const isCityInList = (cities, newCity) => {
 const clearItem = (state, action) => {
   const selectedCityId = action.payload;
   const newList = state.list.filter(city => city.id !== selectedCityId);
+  localStorage.setItem('citiesMine', JSON.stringify(newList));
   const newLatestItem = state.latestItem.id === selectedCityId ? state.list.slice(-1)[0] : state.latestItem;
   return {
     list: newList,

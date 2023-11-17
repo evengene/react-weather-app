@@ -10,7 +10,7 @@ const WeatherContent = ({ latestItem }) => {
   const [currentCity, setCurrentCity] = useState();
 
   useEffect(() => {
-    if (latestItem || latestItem.length > 0) {
+    if (latestItem) {
       setCurrentCity(latestItem);
     } else {
       findUsersCityTemperature().then((res) => {
@@ -29,11 +29,9 @@ const WeatherContent = ({ latestItem }) => {
     <>
       <h4 className="logo">weather.app</h4>
       <Col xs={8} className="content">
-        <div className="current-item">
-          {currentCity && (
-            <Location item={currentCity}/>
-          )}
-        </div>
+        {currentCity && (
+          <Location item={currentCity}/>
+        )}
       </Col>
     </>
   )
