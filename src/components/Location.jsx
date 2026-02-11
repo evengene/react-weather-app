@@ -23,7 +23,7 @@ export const Location = (props) => {
 
   const { itemTimezone, itemDate } = useMemo(() => {
     return getCityTimezoneByOffset(timezone);
-  }, []);
+  }, [timezone]);
 
 
   return (
