@@ -20,7 +20,7 @@ This is a simple weather app built with React and Redux. It uses the OpenWeather
 - Run `npm install` to install all dependencies
 - Create a free account on https://openweathermap.org/
 - Create a `.env` file in the root directory
-- Add your OpenWeatherMap API key in the `.env` file as `REACT_APP_API_KEY=your_api_key`
+- Add your OpenWeatherMap API key in the `.env` file as `REACT_APP_OPENWEATHERMAP_API_KEY=your_api_key`
 - Run `npm start` to start the app
 - Open http://localhost:3000 to view it in the browser.
 
