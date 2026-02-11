@@ -1,53 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import { fetchCity, findUsersCityTemperature } from '../utils';
 import { Location } from './Location';
 
-const WeatherContent = ({ latestItem }) => {
-
-  const [currentCity, setCurrentCity] = useState();
-
+const WeatherContent = ({ latestItem, findUsersCityTemperature, fetchCity }) => {
   useEffect(() => {
-    if (latestItem) {
-      setCurrentCity(latestItem);
-    } else {
-      findUsersCityTemperature().then((res) => {
-        if (res) {
-          setCurrentCity(res.payload);
-        } else {
-          fetchCity('London').then((res) => {
-            setCurrentCity(res.payload);
-          });
+    let isMounted = true;
+
+    const init = async () => {
+      if (latestItem) return;
+
+      const city = await findUsersCityTemperature();
+      if (!isMounted) return;
+
+      if (!city) {
+        try {
+          await fetchCity('London');
+        } catch (e) {
+            console.error('Failed to fetch default city:', e);
         }
-      })
-    }
-  }, [latestItem]);
+      }
+    };
+
+    init().then(r => console.log(r));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [latestItem, findUsersCityTemperature, fetchCity]);
 
   return (
     <>
       <h4 className="logo">weather.app</h4>
       <Col xs={8} className="content">
-        {currentCity && (
-          <Location item={currentCity}/>
+        {latestItem && (
+          <Location item={latestItem} />
         )}
       </Col>
     </>
-  )
-}
+  );
+};
 
 function mapState({ cities }) {
   return {
     latestItem: cities.latestItem,
-  }
+  };
 }
 
 const mapDispatch = {
   fetchCity,
+  findUsersCityTemperature,
 };
 
 export default connect(
   mapState,
   mapDispatch,
-)(WeatherContent)
+)(WeatherContent);

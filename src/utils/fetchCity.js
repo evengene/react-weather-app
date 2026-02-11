@@ -3,23 +3,20 @@ import { fetchCityWeatherByName } from '../api';
 import { filterWeatherDataFromApi } from './filterWeatherDataFromApi';
 
 export const fetchCity = (cityName) => {
-  return function (dispatch) {
-    fetchCityWeatherByName(cityName)
-      .then(
-        (response) => {
-          if (!response) {
-            throw new Error('City not found');
-          }
-          return response;
-        }
-      )
-      .then(filterWeatherDataFromApi)
-      .then(addCity)
-      .then(dispatch)
-      .catch(handleError);
-  }
-};
+  return async function (dispatch) {
+    try {
+      const response = await fetchCityWeatherByName(cityName);
+      const city = filterWeatherDataFromApi(response);
 
-const handleError = (error) => {
-  console.error(`Fetch error: ${error.message}`);
-}
+      if (!city) {
+        throw new Error('Unexpected weather data shape');
+      }
+
+      dispatch(addCity(city));
+      return city;
+    } catch (error) {
+      console.error(`Fetch error: ${error.message}`);
+      throw error;
+    }
+  };
+};

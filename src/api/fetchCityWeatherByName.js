@@ -6,12 +6,28 @@ const IMPERIAL = 'imperial';
 
 
 
-export const fetchCityWeatherByName = (cityName) => {
-  const url = `${BASE_URL}/weather?q=${cityName}&APPID=${API_KEY}&units=${IMPERIAL}`;
-  return axios.get(url).then((response) => {
+export const fetchCityWeatherByName = async (cityName) => {
+  if (!API_KEY) {
+    throw new Error('Missing OpenWeatherMap API key. Check your .env configuration.');
+  }
+
+  const safeCity = encodeURIComponent(cityName?.trim() ?? '');
+  const url = `${BASE_URL}/weather?q=${safeCity}&APPID=${API_KEY}&units=${IMPERIAL}`;
+
+  try {
+    const response = await axios.get(url);
     return response.data;
-  })
-    .catch((error) => {
-      console.log(error);
-    })
-}
+  } catch (error) {
+    // Preserve useful error info for the caller (thunk/UI)
+    const status = error?.response?.status;
+    const message =
+      status === 404 ? 'City not found' :
+      status === 401 ? 'Invalid API key' :
+      status === 429 ? 'Rate limit exceeded' :
+      'Network or server error';
+
+    const err = new Error(message);
+    err.cause = error;
+    throw err;
+  }
+};
