@@ -26,12 +26,24 @@ const WeatherContent = ({ latestItem, findUsersCityTemperature, fetchCity, units
       }
     };
 
-    init().then(r => console.log(r));
+    init();
 
     return () => {
       isMounted = false;
     };
   }, [latestItem, findUsersCityTemperature, fetchCity]);
+
+  useEffect(() => {
+    const refresh = async () => {
+      if (!latestItem?.name) return;
+      try {
+        await fetchCity(latestItem.name);
+      } catch (e) {
+      }
+    };
+
+    refresh();
+  }, [units, latestItem?.name, fetchCity]);
 
   return (
     <>

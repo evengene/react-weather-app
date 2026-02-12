@@ -6,6 +6,8 @@ export const filterWeatherDataFromApi = (response) => {
   const timezone = response.timezone;
   const temp = response?.main?.temp;
 
+  const condition = response?.weather?.[0]?.main;
+  const icon = response?.weather?.[0]?.icon;
   if (id == null || !name || timezone == null || typeof temp !== 'number') {
     return null;
   }
@@ -15,5 +17,7 @@ export const filterWeatherDataFromApi = (response) => {
     name,
     temp,
     timezone,
+    condition: condition || 'Unknown',
+    icon: icon || null,
   };
 };

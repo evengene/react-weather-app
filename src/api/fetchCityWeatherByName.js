@@ -11,7 +11,7 @@ export const fetchCityWeatherByName = async (cityName, units = IMPERIAL_UNITS) =
   }
 
   const safeCity = encodeURIComponent(cityName?.trim() ?? '');
-  const safeUnits = units === METRIC_UNITS ?? IMPERIAL_UNITS;
+  const safeUnits = units === METRIC_UNITS ? METRIC_UNITS : IMPERIAL_UNITS;
   const url = `${BASE_URL}/weather?q=${safeCity}&APPID=${API_KEY}&units=${safeUnits}`;
 
   try {

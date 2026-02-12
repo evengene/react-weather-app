@@ -1,6 +1,8 @@
 .root {
-  background: url("../assets/clear-day-clouds.jpg") no-repeat center center fixed;
+  //background: url("../assets/clear-day-clouds.jpg") no-repeat center center fixed;
+  background: linear-gradient(135deg, #1f2937, #0b1220);
   height: 100vh;
+
 
   &::before {
     content: "";
@@ -11,7 +13,54 @@
     width: 100%;
     background: rgba(0, 0, 0, 0.01);
   }
+
+  &.bg-clear-day {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+  }
+
+  &.bg-clear-night {
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  }
+
+  &.bg-clouds-day {
+    background: linear-gradient(135deg, #93a5cf, #e4efe9);
+  }
+
+  &.bg-clouds-night {
+    background: linear-gradient(135deg, #111827, #334155);
+  }
+
+  &.bg-rain-day {
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  }
+
+  &.bg-rain-night {
+    background: linear-gradient(135deg, #0b1020, #1f3b57);
+  }
+
+  &.bg-storm-day {
+    background: linear-gradient(135deg, #232526, #414345);
+  }
+
+  &.bg-storm-night {
+    background: linear-gradient(135deg, #0a0f1e, #2b2f3a);
+  }
+
+  &.bg-snow-day {
+    background: linear-gradient(135deg, #e6dada, #274046);
+  }
+
+  &.bg-snow-night {
+    background: linear-gradient(135deg, #0f172a, #475569);
+  }
+
+  &.bg-default-day,
+  &.bg-default-night,
+  &.bg-default {
+    background: linear-gradient(135deg, #1f2937, #0b1220);
+  }
 }
+
 
 .sidebar {
   padding: 100px 60px 60px;
@@ -161,6 +210,11 @@
   font-size: 20px;
   padding: 10px;
   line-height: 1;
+}
+.units-switcher {
+  padding-top: 16px;
+  margin-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 @media screen and (min-width: 1440px) {

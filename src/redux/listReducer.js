@@ -1,58 +1,72 @@
 import * as actions from '../redux/actions';
 import { handleActions } from 'redux-actions';
 
-const initialState = {
-  list: [],
-  latestItem: '',
+const STORAGE_KEY = 'citiesMine';
+
+const loadCitiesFromStorage = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
 };
+
+const persistedList = loadCitiesFromStorage();
+
+const initialState = {
+  list: persistedList,
+  latestItem: persistedList.length ? persistedList[persistedList.length - 1] : '',
+};
+
+const upsertCityInList = (cities, city) => {
+  const idx = cities.findIndex((c) => c.id === city.id);
+  if (idx === -1) return [...cities, city];
+
+  const copy = [...cities];
+  copy[idx] = city;
+  return copy;
+  };
 
 const addCity = (state, action) => {
   const city = action.payload;
-  const cityArray = getCities(state);
-  if (!isCityInList(cityArray, city)) {
-    const updatedList = [...cityArray, city];
-    localStorage.setItem('citiesMine', JSON.stringify(updatedList));
-    const updatedLatestItem = updatedList.slice(-1)[0];
-    return {
-      list: updatedList,
-      latestItem: updatedLatestItem,
-    }
-  }
-}
 
-const getCities = (state) => {
-  const cities = localStorage.getItem('citiesMine') || '';
-  if (cities) {
-    return JSON.parse(cities);
-  } else {
-    return state.list;
-  }
-}
+  const updatedList = upsertCityInList(state.list, city);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedList));
+
+  return {
+    ...state,
+    list: updatedList,
+    latestItem: city,
+  };
+};
 
 const updateLatestItem = (state, action) => {
   return {
     ...state,
     latestItem: action.payload,
   };
-}
-
-const isCityInList = (cities, newCity) => {
-  const existingCity = cities.find(city => city.id === newCity.id);
-  return existingCity != null;
-}
+};
 
 const clearItem = (state, action) => {
   const selectedCityId = action.payload;
   const newList = state.list.filter(city => city.id !== selectedCityId);
-  localStorage.setItem('citiesMine', JSON.stringify(newList));
-  const newLatestItem = state.latestItem.id === selectedCityId ? state.list.slice(-1)[0] : state.latestItem;
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(newList));
+
+  const isClearingLatest = state.latestItem?.id === selectedCityId;
+  const newLatestItem = isClearingLatest ? (newList.length ? newList[newList.length - 1] : '') : state.latestItem;
+
   return {
+    ...state,
     list: newList,
     latestItem: newLatestItem,
-  }
-}
+  };
+};
 
-export default handleActions({
+export default handleActions(
+  {
     [actions.addCity]: addCity,
     [actions.clearItem]: clearItem,
     [actions.updateLatestItem]: updateLatestItem,

@@ -1,22 +1,22 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import reducer from './redux/reducer';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { WeatherApp } from './components/WeatherApp';
+import { configureStore } from '@reduxjs/toolkit';
 
-const store = createStore(reducer, composeWithDevTools(
-  applyMiddleware(thunk),
-));
+import reducer from './redux/reducer';
+import WeatherApp from './components/WeatherApp';
+
+const store = configureStore({
+  reducer,
+  devTools: process.env.NODE_ENV !== 'production',
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <WeatherApp/>
+      <WeatherApp />
     </Provider>
   </React.StrictMode>,
 );
