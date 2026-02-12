@@ -1,6 +1,7 @@
 import { filterWeatherDataFromApi } from './filterWeatherDataFromApi';
 import { fetchCityWeatherByName, fetchDefaultUserLocationByIp } from '../api';
 import { updateLatestItem } from '../redux/actions';
+import {IMPERIAL_UNITS} from "../constants";
 
 const getUsersCityLocation = async () => {
   const response = await fetchDefaultUserLocationByIp();
@@ -8,10 +9,12 @@ const getUsersCityLocation = async () => {
 }
 
 export const findUsersCityTemperature = () => {
-  return async function (dispatch) {
+  return async function (dispatch, getState) {
     try {
+      const units = getState()?.units || IMPERIAL_UNITS;
+
       const cityData = await getUsersCityLocation();
-      const cityWeather = await fetchCityWeatherByName(cityData.city);
+      const cityWeather = await fetchCityWeatherByName(cityData.city, units);
       const city = filterWeatherDataFromApi(cityWeather);
 
       if (!city) {
@@ -24,5 +27,5 @@ export const findUsersCityTemperature = () => {
       console.log(error);
       return null;
     }
-    };
+  };
 };

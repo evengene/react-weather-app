@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 
 import { fetchCity, findUsersCityTemperature } from '../utils';
 import { Location } from './Location';
+import {APP_NAME, DEFAULT_CITY} from "../constants";
 
-const WeatherContent = ({ latestItem, findUsersCityTemperature, fetchCity }) => {
+const WeatherContent = ({ latestItem, findUsersCityTemperature, fetchCity, units }) => {
   useEffect(() => {
     let isMounted = true;
 
@@ -17,9 +18,10 @@ const WeatherContent = ({ latestItem, findUsersCityTemperature, fetchCity }) => 
 
       if (!city) {
         try {
-          await fetchCity('London');
+
+          await fetchCity(DEFAULT_CITY);
         } catch (e) {
-            console.error('Failed to fetch default city:', e);
+          console.error('Failed to fetch default city:', e);
         }
       }
     };
@@ -33,19 +35,24 @@ const WeatherContent = ({ latestItem, findUsersCityTemperature, fetchCity }) => 
 
   return (
     <>
-      <h4 className="logo">weather.app</h4>
+      <h4 className="logo">{APP_NAME}</h4>
       <Col xs={8} className="content">
-        {latestItem && (
-          <Location item={latestItem} />
+        {latestItem ? (
+          <Location item={latestItem} units={units} />
+        ) : (
+          <div className="text-muted" style={{ padding: 24 }}>
+            Type a city to begin.
+          </div>
         )}
       </Col>
     </>
   );
 };
 
-function mapState({ cities }) {
+function mapState({ cities, units }) {
   return {
     latestItem: cities.latestItem,
+    units,
   };
 }
 

@@ -1,14 +1,15 @@
 import { Col } from 'react-bootstrap';
 import React, { useMemo } from 'react';
 
-const degreeSign = '℉';
+const getDegreeSign = (units) => (units === 'metric' ? '℃' : '℉');
 
 export const Location = (props) => {
-  const { item } = props;
+  const { item, units } = props;
 
   const { name, temp, timezone } = item;
 
-  const cityTemp = `${temp?.toFixed(0)}${degreeSign}` || '';
+  const degreeSign = getDegreeSign(units);
+  const cityTemp = typeof temp === 'number' ? `${temp.toFixed(0)}${degreeSign}` : '—';
 
   const getCityTimezoneByOffset = (offsetInSecFromUTC) => {
     const offsetInMsFromUTC = offsetInSecFromUTC * 1000;

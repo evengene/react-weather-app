@@ -1,11 +1,14 @@
 import { addCity } from '../redux/actions';
 import { fetchCityWeatherByName } from '../api';
 import { filterWeatherDataFromApi } from './filterWeatherDataFromApi';
+import {IMPERIAL_UNITS} from "../constants";
 
 export const fetchCity = (cityName) => {
-  return async function (dispatch) {
+  return async function (dispatch, getState) {
     try {
-      const response = await fetchCityWeatherByName(cityName);
+      const units = getState()?.units || IMPERIAL_UNITS;
+
+      const response = await fetchCityWeatherByName(cityName, units);
       const city = filterWeatherDataFromApi(response);
 
       if (!city) {
